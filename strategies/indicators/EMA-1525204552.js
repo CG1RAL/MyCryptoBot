@@ -1,4 +1,4 @@
-// @link http://en.wikipedia.org/wiki/Exponential_moving_average#Exponential_moving_average
+﻿// @link http://en.wikipedia.org/wiki/Exponential_moving_average#Exponential_moving_average
 
 var Indicator = function(weight) {
   this.weight = weight;
@@ -27,7 +27,7 @@ Indicator.prototype.calculate = function(price) {
 
   // yesterday
   var y = this.result;
-  
+
   // calculation
   this.result = price * k + y * (1 - k);
 }

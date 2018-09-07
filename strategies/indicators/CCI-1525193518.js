@@ -1,8 +1,6 @@
 /*
-* @consp@github.com
-* Mar 16th 2014
-* CCI
-*/
+ * CCI
+ */
 var log = require('../../core/log');
 var LRC = require('./LRC');
 
@@ -21,7 +19,7 @@ var Indicator = function(settings) {
 
 Indicator.prototype.update = function(candle) {
   
-  // We need sufficient history to get the right result.
+  // We need sufficient history to get the right result. 
 
   var tp = (candle.h + candle.c + candle.l) / 3;
   if (this.size < this.maxSize) {
@@ -44,8 +42,8 @@ Indicator.prototype.update = function(candle) {
 }
 
 /*
-* Handle calculations
-*/
+ * Handle calculations
+ */
 Indicator.prototype.calculate = function(tp) {
 
     // calculate current TP

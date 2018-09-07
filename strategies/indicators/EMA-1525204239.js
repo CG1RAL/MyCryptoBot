@@ -1,6 +1,7 @@
-// @link http://en.wikipedia.org/wiki/Exponential_moving_average#Exponential_moving_average
+﻿// @link http://en.wikipedia.org/wiki/Exponential_moving_average#Exponential_moving_average
 
 var Indicator = function(weight) {
+  this.input = 'price';
   this.weight = weight;
   this.result = false;
   this.age = 0;
@@ -11,6 +12,7 @@ Indicator.prototype.update = function(price) {
   // ema, because we haven't calculated any yet.
   if(this.result === false)
     this.result = price;
+  console.log(price);
 
   this.age++;
   this.calculate(price);

@@ -1,10 +1,11 @@
 // required indicators
 var SMMA = require('./SMMA.js');
 
-var Indicator = function (settings) {
-  this.input = 'price';
+var Indicator = function(settings) {
+  this.input = 'candle';
   this.lastClose = null;
   this.weight = settings.interval;
+  console.log(`RSI Initiated with Interval: ${settings.interval}`);
   this.avgU = new SMMA(this.weight);
   this.avgD = new SMMA(this.weight);
   this.u = 0;
@@ -14,8 +15,8 @@ var Indicator = function (settings) {
   this.age = 0;
 }
 
-Indicator.prototype.update = function (price) {
-  var currentClose = price;
+Indicator.prototype.update = function(candle) {
+  var currentClose = candle.close;
 
   if (this.lastClose === null) {
     // Set initial price to prevent invalid change calculation

@@ -1,16 +1,15 @@
 /*
-* @consp@github.com
-* Mar 16th 2014
-* CCI
-*/
+ * CCI
+ */
 var log = require('../../core/log');
 var LRC = require('./LRC');
 
 var Indicator = function(settings) {
+  this.input = 'candle';
   this.tp = 0.0;
   this.TP = new LRC(settings.history);
   this.result = false;
-  this.hist = Array(); // needed for mean?
+  this.hist = []; // needed for mean?
   this.mean = 0.0;
   this.size = 0;
   this.constant = settings.constant;
@@ -20,10 +19,10 @@ var Indicator = function(settings) {
 }
 
 Indicator.prototype.update = function(candle) {
-  
-  // We need sufficient history to get the right result.
 
-  var tp = (candle.h + candle.c + candle.l) / 3;
+  // We need sufficient history to get the right result. 
+
+  var tp = (candle.high + candle.close + candle.low) / 3;
   if (this.size < this.maxSize) {
       this.hist[this.size] = tp;
       this.size++;
@@ -44,12 +43,12 @@ Indicator.prototype.update = function(candle) {
 }
 
 /*
-* Handle calculations
-*/
+ * Handle calculations
+ */
 Indicator.prototype.calculate = function(tp) {
 
     // calculate current TP
-        
+
     var avgtp = this.TP.result;
     if (typeof(avgtp) == 'boolean') {
         log.error("Failed to get average tp from indicator.");
@@ -61,7 +60,7 @@ Indicator.prototype.calculate = function(tp) {
     var sum = 0.0;
     // calculate tps
     for (var i = 0; i < this.size; i++) {
-        
+
         var z = (this.hist[i] - avgtp);
         if (z < 0) z = z * -1.0;
         sum = sum + z;
@@ -69,7 +68,7 @@ Indicator.prototype.calculate = function(tp) {
     }
 
     this.mean = (sum / this.size);
-    
+
 
 
     this.result = (this.tp - avgtp) / (this.constant * this.mean);

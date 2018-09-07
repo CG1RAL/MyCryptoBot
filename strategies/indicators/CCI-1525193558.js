@@ -1,8 +1,6 @@
 /*
-* @consp@github.com
-* Mar 16th 2014
-* CCI
-*/
+ * CCI
+ */
 var log = require('../../core/log');
 var LRC = require('./LRC');
 
@@ -10,7 +8,7 @@ var Indicator = function(settings) {
   this.tp = 0.0;
   this.TP = new LRC(settings.history);
   this.result = false;
-  this.hist = Array(); // needed for mean?
+  this.hist = []; // needed for mean?
   this.mean = 0.0;
   this.size = 0;
   this.constant = settings.constant;
@@ -21,9 +19,9 @@ var Indicator = function(settings) {
 
 Indicator.prototype.update = function(candle) {
   
-  // We need sufficient history to get the right result.
+  // We need sufficient history to get the right result. 
 
-  var tp = (candle.h + candle.c + candle.l) / 3;
+  var tp = (candle.high + candle.close + candle.low) / 3;
   if (this.size < this.maxSize) {
       this.hist[this.size] = tp;
       this.size++;
@@ -44,8 +42,8 @@ Indicator.prototype.update = function(candle) {
 }
 
 /*
-* Handle calculations
-*/
+ * Handle calculations
+ */
 Indicator.prototype.calculate = function(tp) {
 
     // calculate current TP
