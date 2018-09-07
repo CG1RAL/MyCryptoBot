@@ -46,6 +46,8 @@ method.check = function() {
   var rsi = this.indicators.rsi;
   var rsiVal = rsi.result;
 
+  log.debug(rsiVal)
+
   if(rsiVal > this.settings.thresholds.high) {
 
     // new trend detected

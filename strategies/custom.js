@@ -13,51 +13,81 @@ var log = require('../core/log');
 // Let's create our own strat
 var strat = {};
 
+var RSI = require('./indicators/RSI.js');
+
+var lastprice;
+
 // Prepare everything our method needs
 strat.init = function() {
   this.input = 'candle';
-  this.currentTrend = 'long';
-  this.requiredHistory = 0;
+  this.currentTrend = 'init';
+  this.requiredHistory = 20;
+
+  var mymaxfastsettings = {
+    optInTimePeriod:10
+  }
+  var myminfastsettings = {
+    optInTimePeriod:10
+  }
+
+  this.addTalibIndicator('mymaxfast','max',mymaxfastsettings);
+  this.addTalibIndicator('myminfast','min',myminfastsettings);
+
+  var myrsisettings = {
+    optInTimePeriod:14
+  }
+
+  this.addTalibIndicator('myrsi', 'rsi', myrsisettings);
 }
 
 // What happens on every new candle?
 strat.update = function(candle) {
-
-  // Get a random number between 0 and 1.
-  this.randomNumber = Math.random();
-
-  // There is a 10% chance it is smaller than 0.1
-  this.toUpdate = this.randomNumber < 0.1;
 }
 
 // For debugging purposes.
 strat.log = function() {
-  log.debug('calculated random number:');
-  log.debug('\t', this.randomNumber.toFixed(3));
 }
 
 // Based on the newly calculated
 // information, check if we should
 // update or not.
-strat.check = function() {
+strat.check = function(candle) {
 
-  // Only continue if we have a new update.
-  if(!this.toUpdate)
-    return;
+  var price = candle.close;
+  var maxifast = this.talibIndicators.mymaxfast.result.outReal;
+  var minifast = this.talibIndicators.myminfast.result.outReal;
 
-  if(this.currentTrend === 'long') {
+  var rsiVal = this.talibIndicators.myrsi.result.outReal;
 
-    // If it was long, set it to short
-    this.currentTrend = 'short';
-    this.advice('short');
+  if(this.currentTrend === 'init' ) {
 
-  } else {
+    if(price >= maxifast && price != lastprice && rsiVal <= 40){
+      this.currentTrend = 'longfast';
+      this.advice('long');
+      log.debug('FastBought@', price);
+      log.debug(rsiVal)
+      lastprice = price;
 
-    // If it was short, set it to long
-    this.currentTrend = 'long';
-    this.advice('long');
+    }
+  }
+  if(this.currentTrend === 'longfast'){
 
+    if(price <= minifast){
+      this.currentTrend = 'init';
+      this.advice('short');
+      log.debug('Sold@', price);
+    } else {
+      if(price > 1.05*lastprice){
+        lastprice = 1.05*lastprice;
+      }
+      if(price < lastprice*0.95){
+        this.currentTrend = 'init';
+        this.advice('short');
+        log.debug('StopSold@', price);
+      }
+    }
   }
 }
+
 
 module.exports = strat;
